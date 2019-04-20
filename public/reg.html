@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="icon" href="img/wen-ico.png" type="img/x-ico" />
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/base.css" rel="stylesheet">
+  <link href="css/reg.css" rel="stylesheet">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <title>注册 - 背包兔做行程更简单</title>
+  <style>
+  </style>
+</head>
+
+<body>
+  <header></header>
+  <section>
+    <img src="img/reg/pangxie.jpg" alt="" class="">
+    <div id="regForm" class="">
+        <img src="img/reg/title.png" alt="" class="d-block img-fluid m-auto">
+      <p class="m-auto w-75">用户名
+        <input type="text" name="uname" id="uname" placeholder="请输入用户名" class="form-control" onblur="usercheck()">
+      </p>
+      <p class="m-auto w-75"><span id="checkname" class="d-none">用户名格式不正确</span></p>
+      <p class="m-auto w-75">昵称
+        <input type="text" name="user_name" id="user_name" placeholder="给自己取一个美腻的名字吧" class="form-control m-auto">
+      </p>
+      <p class="m-auto w-75">密码
+        <input type="password" name="upwd" id="upwd" placeholder="请输入密码" class="form-control m-auto" onblur="checkpwd()">
+      </p>
+      <p class="m-auto w-75">重复密码
+        <input type="password" name="reUpwd" id="reUpwd" placeholder="请再次输入密码" class="form-control m-auto" onblur="checkpwd()">
+      </p>
+      <p class="m-auto w-75"><span id="checkupwd" class="d-none">两次密码不一致</span></p>
+      <p class="m-auto w-75">验证码
+        <input type="text" name="" id="" placeholder="请输入验证码" class="form-control m-auto">
+      </p>
+      <div class="w-75 m-auto">
+        <p class="mySmallFont mt-2">注册视为同意<a href="">《背包兔用户使用协议》</a></p>
+        <input type="button" value="立即注册" class="btn btn-primary w-100" onclick="getReg()" id="regbtn">
+      </div>
+      <p class="m-auto w-75 text-center p-2">
+        已有账号？<a href="#login" data-toggle="modal">直接登录</a>
+      </p>
+    </div>
+  </section>
+  <footer></footer>
+  <script>
+    var uname=document.getElementById("uname");
+    var u=document.getElementById("upwd");
+    function getReg(){
+      var xhr=new XMLHttpRequest();
+      xhr.onreadystatechange=function(){
+        if(xhr.readyState==4&&xhr.status==200){
+          var result=xhr.responseText;
+          alert(result);
+        }
+      }
+      xhr.open("post","/user/reg",true);
+      xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+      var formdata=`uname=${uname.value}&upwd=${upwd.value}&user_name=${user_name.value}`;
+      xhr.send(formdata);
+    }
+    function usercheck(){
+      var reg=/^\w{6,12}$/;
+      if(reg.test(uname.value)==false){
+        checkname.className="d-block";
+        regbtn.disabled=true;
+        return;
+      }else{
+        checkname.className="d-none";
+      }
+      var xhr=new XMLHttpRequest();
+      xhr.onreadystatechange=function(){
+        if(xhr.readyState==4&&xhr.status==200){
+          var result=xhr.responseText;
+          if(result=="该用户名已存在"){
+            regbtn.disabled=true;
+          }else{
+            regbtn.disabled=false;
+          }
+          alert(result);
+        }
+      }
+      xhr.open("get","/user/usercheck?uname="+uname.value,true);
+      xhr.send();
+    }
+    function checkpwd(){
+      if(upwd.value!=reUpwd.value){
+        checkupwd.className="d-block";
+      }else{
+        checkupwd.className="d-none"
+      }
+    }
+
+  </script>
+  <script src="js/header.js"></script>
+  <script src="js/footer.js"></script>
+</body>
+
+</html>
